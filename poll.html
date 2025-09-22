@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poll - Online Voting System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="site-header">
+        <div class="container nav">
+            <div class="brand">Online Voting System</div>
+            <div class="nav-links">
+                <a class="nav-link" href="index.html">Home</a>
+                <a class="nav-link" href="about.html">About</a>
+                <a class="nav-link" href="login.html">Login</a>
+                <a class="nav-link active" href="poll.html">Poll</a>
+                <button class="theme-toggle" id="themeToggle" data-ripple>Dark Mode</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="page">
+        <div class="panel">
+            <div class="panel-title">Student Council President</div>
+            <div class="subtitle">Choose your candidate</div>
+
+            <div class="options" id="options">
+                <div class="option" data-option="Alex" data-ripple>
+                    <div class="option-name">Alex Johnson</div>
+                    <div class="option-bar"><span></span></div>
+                    <div class="option-percent">0%</div>
+                </div>
+                <div class="option" data-option="Priya" data-ripple>
+                    <div class="option-name">Priya Sharma</div>
+                    <div class="option-bar"><span></span></div>
+                    <div class="option-percent">0%</div>
+                </div>
+                <div class="option" data-option="Diego" data-ripple>
+                    <div class="option-name">Diego Rivera</div>
+                    <div class="option-bar"><span></span></div>
+                    <div class="option-percent">0%</div>
+                </div>
+            </div>
+            <div class="form-hint" id="voteHint">Click a candidate to cast a demo vote.</div>
+        </div>
+    </div>
+
+    <div class="site-footer">
+        <div class="container">
+            <span>© 2025 Online Voting System</span>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
