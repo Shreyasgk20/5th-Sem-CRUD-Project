@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Voter Login</title><link rel="stylesheet" href="css/style.css"></head>
+<body>
+<div class="container auth-page">
+  <h2>Voter Login</h2>
+  <form action="/backend/auth.php" method="POST" class="form">
+    <input type="hidden" name="action" value="voter_login">
+    <label>Voter ID
+      <input name="voter_id" type="text" required>
+    </label>
+    <label>Date of birth
+      <input name="dob" type="date" required>
+    </label>
+    <div class="form-row">
+      <button class="btn primary" type="submit">Login</button>
+      <a href="index.html" class="btn outline">Back</a>
+    </div>
+    <div class="form-msg" id="form-msg"></div>
+  </form>
+</div>
+<script src="js/main.js"></script>
+</body>
+</html>

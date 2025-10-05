@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Admin</title><link rel="stylesheet" href="css/style.css"></head>
+<body>
+<div class="container auth-page">
+  <h2>Admin Panel</h2>
+  <form id="admin-login" action="/backend/auth.php" method="POST">
+    <input type="hidden" name="action" value="admin_login">
+    <label>Username <input name="username" required></label>
+    <label>Password <input name="password" type="password" required></label>
+    <div class="form-row"><button class="btn primary" type="submit">Login</button></div>
+  </form>
+
+  <hr/>
+
+  <div id="admin-tools" style="display:none;">
+    <h3>Add candidate</h3>
+    <form id="add-candidate">
+      <label>Name <input name="name" required></label>
+      <label>Party <input name="party"></label>
+      <label>Manifesto <textarea name="manifesto"></textarea></label>
+      <div class="form-row"><button class="btn primary" type="button" id="addCandidateBtn">Add</button></div>
+    </form>
+
+    <h3>Add voter</h3>
+    <form id="add-voter">
+      <label>Voter ID <input name="voter_id" required></label>
+      <label>Full name <input name="full_name" required></label>
+      <label>DOB <input name="dob" type="date" required></label>
+      <label><input name="is_verified" type="checkbox"> Verified</label>
+      <div class="form-row"><button class="btn primary" type="button" id="addVoterBtn">Add Voter</button></div>
+    </form>
+
+    <h3>Stats</h3>
+    <div id="stats"></div>
+  </div>
+</div>
+<script src="js/main.js"></script>
+</body>
+</html>

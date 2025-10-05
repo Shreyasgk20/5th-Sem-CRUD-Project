@@ -1,57 +1,68 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Voting System</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ElectionSeva</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="site-header">
-        <div class="container nav">
-            <div class="brand">Online Voting System</div>
-            <div class="nav-links">
-                <a class="nav-link active" href="index.html">Home</a>
-                <a class="nav-link" href="about.html">About</a>
-                <a class="nav-link" href="login.html">Login</a>
-                <a class="nav-link" href="poll.html">Poll</a>
-                <button class="theme-toggle" id="themeToggle" data-ripple>Dark Mode</button>
-            </div>
-        </div>
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="assets/logo.svg" alt="ElectionSeva logo" class="logo">
+      <div class="brand-text">
+        <h1>ElectionSeva</h1>
+        <div class="hindi">निर्वाचन सेवा</div>
+      </div>
     </div>
-
-    <div class="main">
-        <div class="hero">
-            <div class="container hero-grid">
-                <div class="hero-left">
-                    <div class="gradient-title">
-                        ONLINE<br>VOTING<br>SYSTEM
-                    </div>
-                    <div class="subtitle">Easy and secure online voting platform</div>
-                    <a href="login.html" class="cta-button" data-ripple>
-                        Get Started
-                    </a>
-                </div>
-                <div class="hero-right">
-                    <div class="card-illustration">
-                        <img id="heroImage" src="images/10.png" data-light-src="images/10.png" >
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="header-right">
+      <div class="lang">EN</div>
+      <div class="helpline">📞 1800-123-4321</div>
+      <a class="btn primary" href="voter_login.html">Login to Vote</a>
     </div>
+  </div>
+</header>
 
-    <div class="site-footer">
-        <div class="container">
-            <span>© 2025 Online Voting System</span>
-        </div>
+<main>
+  <section class="hero container">
+    <div class="hero-left">
+      <h2>Vote Safely.<br>Vote Securely.<br>Vote for India.</h2>
+      <p>Verify your identity and cast your vote securely. Only registered voters can vote once.</p>
+      <div class="hero-ctas">
+        <a class="btn outline" href="#">How to Vote</a>
+        <a class="btn primary" href="voter_login.html">Login to Vote</a>
+      </div>
     </div>
+    <div class="hero-right">
+      <img src="assets/hero-2.png" alt="Happy family representing voters">
+    </div>
+  </section>
 
-    <script src="script.js"></script>
+  <section class="info container">
+    <div class="info-grid">
+      <div class="info-item">
+        <h3>How voting works</h3>
+        <p>Simple steps: login, choose, confirm, done.</p>
+      </div>
+      <div class="info-item">
+        <h3>Security & privacy</h3>
+        <p>Votes are recorded and cannot be edited.</p>
+      </div>
+      <div class="info-item">
+        <h3>Helpline</h3>
+        <p>1800-123-4321</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <small>© ElectionSeva</small>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
 </body>
 </html>
-
-

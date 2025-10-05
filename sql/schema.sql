@@ -1,0 +1,36 @@
+CREATE DATABASE IF NOT EXISTS online_voting_simplified;
+USE online_voting_simplified;
+
+CREATE TABLE admins (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE voters (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  voter_id VARCHAR(50) UNIQUE NOT NULL,
+  full_name VARCHAR(200) NOT NULL,
+  dob DATE NOT NULL,
+  is_verified TINYINT(1) DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE candidates (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(200) NOT NULL,
+  party VARCHAR(150),
+  manifesto TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE votes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  voter_id INT NOT NULL,
+  candidate_id INT NOT NULL,
+  cast_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (voter_id) REFERENCES voters(id) ON DELETE CASCADE,
+  FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE,
+  UNIQUE KEY unique_vote_per_voter (voter_id)
+);

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Ballot</title><link rel="stylesheet" href="css/style.css"></head>
+<body>
+<div class="container auth-page">
+  <h2>Ballot</h2>
+  <form id="ballot-form" action="/backend/vote.php" method="POST">
+    <div id="candidates"></div>
+    <div class="form-row">
+      <button class="btn primary" type="submit">Confirm & Cast Vote</button>
+      <a class="btn outline" href="index.html">Cancel</a>
+    </div>
+    <div id="vote-msg" class="form-msg"></div>
+  </form>
+</div>
+<script src="js/main.js"></script>
+</body>
+</html>
