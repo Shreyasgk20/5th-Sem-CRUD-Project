@@ -1,6 +1,8 @@
 <?php
 // backend/auth.php
 require_once 'db.php';
+// Use absolute path base under XAMPP
+$BASE_FRONTEND = '/Online_Voting/Frontend';
 session_start();
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -20,7 +22,7 @@ if ($action === 'voter_login') {
     $dob = trim($_POST['dob'] ?? '');
 
     if ($voter_id === '' || $dob === '') {
-        if (is_ajax()) echo json_encode(['success'=>false,'message'=>'Fill all fields']); else header('Location: /frontend/voter_login.html?error=1');
+        if (is_ajax()) echo json_encode(['success'=>false,'message'=>'Fill all fields']); else header('Location: ' . $BASE_FRONTEND . '/voter_login.html?error=1');
         exit;
     }
 
@@ -36,13 +38,13 @@ if ($action === 'voter_login') {
         $_SESSION['voter_name'] = $row['full_name'];
         session_regenerate_id(true);
         if (is_ajax()) {
-            echo json_encode(['success'=>true,'redirect'=>'/frontend/ballot.html']);
+            echo json_encode(['success'=>true,'redirect'=> $BASE_FRONTEND . '/ballot.html']);
         } else {
-            header('Location: /frontend/ballot.html');
+            header('Location: ' . $BASE_FRONTEND . '/ballot.html');
         }
         exit;
     } else {
-        if (is_ajax()) echo json_encode(['success'=>false,'message'=>'Invalid credentials or not verified.']); else header('Location: /frontend/voter_login.html?error=invalid');
+        if (is_ajax()) echo json_encode(['success'=>false,'message'=>'Invalid credentials or not verified.']); else header('Location: ' . $BASE_FRONTEND . '/voter_login.html?error=invalid');
         exit;
     }
 }
@@ -52,7 +54,7 @@ if ($action === 'admin_login') {
     $password = $_POST['password'] ?? '';
 
     if ($username === '' || $password === '') {
-        if (is_ajax()) echo json_encode(['success'=>false,'message'=>'Fill all fields']); else header('Location: /frontend/admin.html?error=1');
+        if (is_ajax()) echo json_encode(['success'=>false,'message'=>'Fill all fields']); else header('Location: ' . $BASE_FRONTEND . '/admin.html?error=1');
         exit;
     }
 
@@ -66,10 +68,10 @@ if ($action === 'admin_login') {
     if ($row && password_verify($password, $row['password_hash'])) {
         $_SESSION['admin_id'] = (int)$row['id'];
         session_regenerate_id(true);
-        if (is_ajax()) echo json_encode(['success'=>true,'redirect'=>'/frontend/admin.html?logged=1']); else header('Location: /frontend/admin.html?logged=1');
+        if (is_ajax()) echo json_encode(['success'=>true,'redirect'=> $BASE_FRONTEND . '/admin.html?logged=1']); else header('Location: ' . $BASE_FRONTEND . '/admin.html?logged=1');
         exit;
     } else {
-        if (is_ajax()) echo json_encode(['success'=>false,'message'=>'Invalid admin credentials']); else header('Location: /frontend/admin.html?error=invalid');
+        if (is_ajax()) echo json_encode(['success'=>false,'message'=>'Invalid admin credentials']); else header('Location: ' . $BASE_FRONTEND . '/admin.html?error=invalid');
         exit;
     }
 }
@@ -77,7 +79,7 @@ if ($action === 'admin_login') {
 if ($action === 'logout') {
     session_unset();
     session_destroy();
-    if (is_ajax()) echo json_encode(['success'=>true,'redirect'=>'/frontend/index.html']); else header('Location: /frontend/index.html');
+    if (is_ajax()) echo json_encode(['success'=>true,'redirect'=> $BASE_FRONTEND . '/index.html']); else header('Location: ' . $BASE_FRONTEND . '/index.html');
     exit;
 }
 

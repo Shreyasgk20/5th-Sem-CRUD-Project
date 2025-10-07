@@ -2,7 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   // populate candidates on ballot page
   if (document.getElementById('candidates')) {
-    fetch('/backend/get_candidates.php')
+    fetch('/Online_Voting/Backend/get_candidates.php')
       .then(r => r.json())
       .then(list => {
         const wrap = document.getElementById('candidates');
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('add-candidate');
       const data = new FormData(form);
       data.append('action','add_candidate');
-      fetch('/backend/admin_actions.php', { method:'POST', body:data, credentials:'include' })
+      fetch('/Online_Voting/Backend/admin_actions.php', { method:'POST', body:data, credentials:'include' })
         .then(r=>r.json()).then(j => alert(j.success ? 'Candidate added' : 'Error: '+(j.message||'')));
     });
   }
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('add-voter');
       const data = new FormData(form);
       data.append('action','add_voter');
-      fetch('/backend/admin_actions.php', { method:'POST', body:data, credentials:'include' })
+      fetch('/Online_Voting/Backend/admin_actions.php', { method:'POST', body:data, credentials:'include' })
         .then(r=>r.json()).then(j => alert(j.success ? 'Voter added' : 'Error: '+(j.message||'')));
     });
   }

@@ -3,42 +3,53 @@
 require_once 'db.php';
 session_start();
 
+// This file handles admin-only actions; enforce admin session
+$BASE_FRONTEND = '/Online_Voting/Frontend';
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo "Method not allowed";
     exit;
 }
 
-if (!isset($_SESSION['voter_id'])) {
-    if (is_ajax()) { echo json_encode(['success'=>false,'message'=>'Not logged in']); } else { header('Location: /frontend/voter_login.html?error=login'); }
+if (!isset($_SESSION['admin_id'])) {
+    if (is_ajax()) { echo json_encode(['success'=>false,'message':'Admin login required']); } else { header('Location: ' . $BASE_FRONTEND . '/admin.html?error=login'); }
     exit;
 }
 
 $mysqli = get_db();
-$voter_id = (int)$_SESSION['voter_id'];
-$candidate_id = isset($_POST['candidate_id']) ? (int)$_POST['candidate_id'] : 0;
+$action = $_POST['action'] ?? '';
 
-if ($candidate_id <= 0) {
-    if (is_ajax()) echo json_encode(['success'=>false,'message'=>'Invalid candidate']); else header('Location: /frontend/ballot.html?error=invalid');
+if ($action === 'add_candidate') {
+    $name = trim($_POST['name'] ?? '');
+    $party = trim($_POST['party'] ?? '');
+    $manifesto = trim($_POST['manifesto'] ?? '');
+    if ($name === '') { echo json_encode(['success'=>false,'message'=>'Name required']); exit; }
+    $stmt = $mysqli->prepare("INSERT INTO candidates (name, party, manifesto) VALUES (?, ?, ?)");
+    $stmt->bind_param('sss', $name, $party, $manifesto);
+    $ok = $stmt->execute();
+    $stmt->close();
+    echo json_encode(['success'=>$ok]);
     exit;
 }
 
-$stmt = $mysqli->prepare("INSERT INTO votes (voter_id, candidate_id) VALUES (?, ?)");
-$stmt->bind_param('ii', $voter_id, $candidate_id);
-$ok = $stmt->execute();
-
-if ($ok) {
+if ($action === 'add_voter') {
+    $voter_id = trim($_POST['voter_id'] ?? '');
+    $full_name = trim($_POST['full_name'] ?? '');
+    $dob = trim($_POST['dob'] ?? '');
+    $is_verified = isset($_POST['is_verified']) ? 1 : 0;
+    if ($voter_id === '' || $full_name === '' || $dob === '') { echo json_encode(['success'=>false,'message'=>'All fields required']); exit; }
+    $stmt = $mysqli->prepare("INSERT INTO voters (voter_id, full_name, dob, is_verified) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param('sssi', $voter_id, $full_name, $dob, $is_verified);
+    $ok = $stmt->execute();
     $stmt->close();
-    if (is_ajax()) echo json_encode(['success'=>true,'redirect'=>'/frontend/thanks.html']); else header('Location: /frontend/thanks.html');
-    exit;
-} else {
-    // Duplicate vote -> errno 1062
-    $errno = $mysqli->errno;
-    $stmt->close();
-    if ($errno === 1062) {
-        if (is_ajax()) echo json_encode(['success'=>false,'message'=>'You already voted.']); else header('Location: /frontend/ballot.html?error=already');
-    } else {
-        if (is_ajax()) echo json_encode(['success'=>false,'message'=>'Database error']); else header('Location: /frontend/ballot.html?error=db');
-    }
+    echo json_encode(['success'=>$ok]);
     exit;
 }
+
+if ($action === 'get_stats') {
+    require __DIR__ . '/get_stats.php';
+    exit;
+}
+
+http_response_code(400);
+echo json_encode(['success'=>false,'message'=>'Unknown action']);
