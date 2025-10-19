@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Register Candidate - Admin Panel</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="assets/logo.svg" alt="ElectionSeva logo" class="logo">
+      <div class="brand-text">
+        <h1>ElectionSeva Admin</h1>
+        <div class="hindi">निर्वाचन सेवा प्रशासन</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <a class="btn outline" href="admin.html">Admin Panel</a>
+      <a class="btn outline" href="index.html">Home</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container auth-page">
+    <div class="page-header">
+      <h2>Register New Candidate</h2>
+      <p class="subtitle">Add a new candidate to the election</p>
+    </div>
+    
+    <form id="candidate-registration-form" action="/Online_Voting/backend/admin_register_candidate.php" method="POST" enctype="multipart/form-data" class="form registration-form">
+      <div class="form-section">
+        <h3>Candidate Information</h3>
+        <div class="form-row">
+          <label class="form-group">
+            Candidate Name *
+            <input name="candidate_name" type="text" required placeholder="Full name of the candidate">
+          </label>
+          <label class="form-group">
+            Party Name *
+            <input name="party_name" type="text" required placeholder="Political party name">
+          </label>
+        </div>
+        
+        <div class="form-row">
+          <label class="form-group">
+            Constituency/Position *
+            <input name="constituency" type="text" required placeholder="e.g., Delhi North, President, etc.">
+          </label>
+          <label class="form-group">
+            Party Symbol *
+            <input name="party_symbol" type="file" accept="image/*" required>
+            <small>Upload party symbol image (JPG, PNG, GIF - Max 2MB)</small>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Manifesto</h3>
+        <label class="form-group">
+          Manifesto *
+          <textarea name="manifesto" required placeholder="Detailed manifesto and promises of the candidate" rows="6"></textarea>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn primary" type="submit">Register Candidate</button>
+        <a href="admin.html" class="btn outline">Back to Admin Panel</a>
+        <a href="candidates_list.html" class="btn outline">View All Candidates</a>
+      </div>
+      
+      <div class="form-msg" id="form-msg"></div>
+    </form>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <small>© ElectionSeva - Government of India</small>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+// Form validation
+document.getElementById('candidate-registration-form').addEventListener('submit', function(e) {
+  const fileInput = document.querySelector('input[name="party_symbol"]');
+  const file = fileInput.files[0];
+  
+  if (file) {
+    // Check file size (2MB limit)
+    if (file.size > 2 * 1024 * 1024) {
+      e.preventDefault();
+      document.getElementById('form-msg').textContent = 'File size must be less than 2MB';
+      document.getElementById('form-msg').style.color = '#b12';
+      return false;
+    }
+    
+    // Check file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      e.preventDefault();
+      document.getElementById('form-msg').textContent = 'Only JPG, PNG, and GIF files are allowed';
+      document.getElementById('form-msg').style.color = '#b12';
+      return false;
+    }
+  }
+});
+</script>
+</body>
+</html>

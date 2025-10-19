@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Election Results - ElectionSeva</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="assets/logo.svg" alt="ElectionSeva logo" class="logo">
+      <div class="brand-text">
+        <h1>ElectionSeva</h1>
+        <div class="hindi">निर्वाचन सेवा</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <a class="btn outline" href="index.html">Home</a>
+      <a class="btn primary" href="voter_login.html">Login to Vote</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="page-header">
+      <h1>Election Results</h1>
+      <p class="subtitle">Official election results and vote counts</p>
+    </div>
+
+    <div id="results-container">
+      <p>Loading results...</p>
+    </div>
+
+    <div class="election-info">
+      <div class="info-card">
+        <h3>Total Votes Cast</h3>
+        <div class="stat-number" id="total-votes">-</div>
+      </div>
+      <div class="info-card">
+        <h3>Total Voters</h3>
+        <div class="stat-number" id="total-voters">-</div>
+      </div>
+      <div class="info-card">
+        <h3>Voter Turnout</h3>
+        <div class="stat-number" id="turnout">-</div>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <a href="candidates_list.html" class="btn outline large">View All Candidates</a>
+      <a href="index.html" class="btn outline large">Back to Home</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <small>© ElectionSeva - Government of India</small>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+// Load results
+document.addEventListener('DOMContentLoaded', function() {
+  loadResults();
+});
+
+function loadResults() {
+  fetch('/Online_Voting/backend/get_results.php')
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        displayResults(data.results);
+        displayStats(data.stats);
+      } else {
+        document.getElementById('results-container').innerHTML = 
+          '<div class="no-results"><p>Results are not available at the moment.</p></div>';
+      }
+    })
+    .catch(error => {
+      console.error('Error loading results:', error);
+      document.getElementById('results-container').innerHTML = 
+        '<div class="error"><p>Error loading results. Please try again later.</p></div>';
+    });
+}
+
+function displayResults(results) {
+  const container = document.getElementById('results-container');
+  
+  if (!Array.isArray(results) || results.length === 0) {
+    container.innerHTML = '<div class="no-results"><p>No results available yet.</p></div>';
+    return;
+  }
+  
+  // Sort results by vote count (descending)
+  results.sort((a, b) => b.vote_count - a.vote_count);
+  
+  const maxVotes = results[0].vote_count;
+  
+  const html = results.map((candidate, index) => {
+    const isWinner = index === 0 && candidate.vote_count > 0;
+    const percentage = maxVotes > 0 ? ((candidate.vote_count / maxVotes) * 100).toFixed(1) : 0;
+    
+    return `
+      <div class="result-card ${isWinner ? 'winner' : ''}">
+        <div class="result-rank">
+          ${isWinner ? '<span class="winner-badge">WINNER</span>' : `#${index + 1}`}
+        </div>
+        <div class="result-candidate">
+          <div class="candidate-symbol">
+            ${candidate.party_symbol ? 
+              `<img src="uploads/symbols/${candidate.party_symbol}" alt="${candidate.party} symbol" class="party-symbol">` : 
+              '<div class="no-symbol">No Symbol</div>'
+            }
+          </div>
+          <div class="candidate-details">
+            <h3 class="candidate-name">${escapeHtml(candidate.name)}</h3>
+            <p class="candidate-party">${escapeHtml(candidate.party || 'Independent')}</p>
+            <p class="candidate-constituency">${escapeHtml(candidate.constituency || '')}</p>
+          </div>
+        </div>
+        <div class="result-votes">
+          <div class="vote-count">${candidate.vote_count} votes</div>
+          <div class="vote-percentage">${percentage}%</div>
+        </div>
+        <div class="result-bar">
+          <div class="vote-bar" style="width: ${percentage}%"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  container.innerHTML = html;
+}
+
+function displayStats(stats) {
+  document.getElementById('total-votes').textContent = stats.total_votes || 0;
+  document.getElementById('total-voters').textContent = stats.total_voters || 0;
+  
+  const turnout = stats.total_voters > 0 ? 
+    ((stats.total_votes / stats.total_voters) * 100).toFixed(1) : 0;
+  document.getElementById('turnout').textContent = turnout + '%';
+}
+
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+</script>
+</body>
+</html>

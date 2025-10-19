@@ -1,10 +1,15 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Voter Login</title><link rel="stylesheet" href="css/style.css"></head>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Voter Login</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
 <body>
 <div class="container auth-page">
   <h2>Voter Login</h2>
-  <form action="/Online_Voting/Backend/auth.php" method="POST" class="form">
+  <form id="voter-login-form" action="/Online_Voting/backend/auth.php" method="POST" class="form">
     <input type="hidden" name="action" value="voter_login">
     <label>Voter ID
       <input name="voter_id" type="text" required>

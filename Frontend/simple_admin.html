@@ -1,0 +1,174 @@
+<?php
+session_start();
+$BASE_FRONTEND = '/Online_Voting/frontend';
+
+// Only allow admin
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: {$BASE_FRONTEND}/admin.html");
+    exit;
+}
+?>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Simple Admin Panel - ElectionSeva</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="assets/logo.svg" alt="ElectionSeva logo" class="logo">
+      <div class="brand-text">
+        <h1>ElectionSeva Admin</h1>
+        <div class="hindi">निर्वाचन सेवा प्रशासन</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <a class="btn outline" href="index.html">Home</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <h1>Simple Admin Panel</h1>
+    
+    <!-- Election Control -->
+    <div class="admin-section">
+      <h2>Election Control</h2>
+      <div class="admin-actions">
+        <a href="/Online_Voting/backend/simple_admin.php?action=open_election" class="btn primary">Open Election</a>
+        <a href="/Online_Voting/backend/simple_admin.php?action=close_election" class="btn outline">Close Election</a>
+        <a href="/Online_Voting/backend/simple_admin.php?action=publish_results" class="btn success">Publish Results</a>
+      </div>
+    </div>
+
+    <!-- Add Candidate -->
+    <div class="admin-section">
+      <h2>Add Candidate</h2>
+      <form action="/Online_Voting/backend/simple_admin.php?action=add_candidate" method="POST">
+        <div class="form-row">
+          <label>Name: <input name="name" required></label>
+          <label>Party: <input name="party"></label>
+        </div>
+        <label>Manifesto: <textarea name="manifesto"></textarea></label>
+        <button type="submit" class="btn primary">Add Candidate</button>
+      </form>
+    </div>
+
+    <!-- Add Voter -->
+    <div class="admin-section">
+      <h2>Add Voter</h2>
+      <form action="/Online_Voting/backend/simple_admin.php?action=add_voter" method="POST">
+        <div class="form-row">
+          <label>Voter ID: <input name="voter_id" required></label>
+          <label>Full Name: <input name="full_name" required></label>
+        </div>
+        <div class="form-row">
+          <label>DOB: <input name="dob" type="date" required></label>
+          <label><input name="is_verified" type="checkbox"> Verified</label>
+        </div>
+        <button type="submit" class="btn primary">Add Voter</button>
+      </form>
+    </div>
+
+    <!-- Pending Voters -->
+    <div class="admin-section">
+      <h2>New Voters (Pending Verification)</h2>
+      <div id="pending-voters">Loading...</div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="admin-section">
+      <h2>Quick Actions</h2>
+      <div class="admin-actions">
+        <a href="candidates_list.html" class="btn outline">View All Candidates</a>
+        <a href="results.html" class="btn outline">View Results</a>
+        <a href="voter_login.html" class="btn outline">Test Voter Login</a>
+        <a href="ballot.html" class="btn outline">Test Ballot</a>
+      </div>
+    </div>
+
+    <!-- Simple Stats -->
+    <div class="admin-section">
+      <h2>Quick Stats</h2>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <strong>Total Voters:</strong> <span id="voter-count">Loading...</span>
+        </div>
+        <div class="stat-item">
+          <strong>Total Candidates:</strong> <span id="candidate-count">Loading...</span>
+        </div>
+        <div class="stat-item">
+          <strong>Total Votes:</strong> <span id="vote-count">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <small>© ElectionSeva - Government of India</small>
+  </div>
+</footer>
+
+<script>
+// Load stats
+fetch('/Online_Voting/backend/get_stats.php')
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById('voter-count').textContent = data.total_voters || 0;
+    document.getElementById('candidate-count').textContent = data.by_candidate ? data.by_candidate.length : 0;
+    document.getElementById('vote-count').textContent = data.votes_cast || 0;
+  })
+  .catch(err => {
+    document.getElementById('voter-count').textContent = 'Error';
+    document.getElementById('candidate-count').textContent = 'Error';
+    document.getElementById('vote-count').textContent = 'Error';
+  });
+
+// Load pending voters
+function loadPendingVoters() {
+  fetch('/Online_Voting/backend/get_pending_voters.php')
+    .then(r => r.json())
+    .then(data => {
+      const wrap = document.getElementById('pending-voters');
+      if (!data || data.length === 0) {
+        wrap.innerHTML = '<p>No pending voters.</p>';
+        return;
+      }
+      wrap.innerHTML = data.map(v => `
+        <div class="voter-row">
+          <span>${v.voter_id} - ${v.full_name}</span>
+          <button class="btn small success" onclick="verifyVoter(${v.id})">Verify</button>
+        </div>
+      `).join('');
+    })
+    .catch(err => document.getElementById('pending-voters').innerHTML = '<p>Error loading voters.</p>');
+}
+
+// Verify voter
+function verifyVoter(voterId) {
+  if (!confirm('Verify this voter?')) return;
+  fetch('/Online_Voting/backend/verify_voter.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `voter_id=${voterId}`,
+    credentials: 'include'
+  })
+  .then(r => r.json())
+  .then(j => {
+    alert(j.success ? 'Voter verified' : 'Error: ' + (j.message || ''));
+    loadPendingVoters();
+  });
+}
+
+// Initial load
+loadPendingVoters();
+</script>
+</body>
+</html>

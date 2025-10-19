@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>All Candidates - ElectionSeva</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="assets/logo.svg" alt="ElectionSeva logo" class="logo">
+      <div class="brand-text">
+        <h1>ElectionSeva</h1>
+        <div class="hindi">निर्वाचन सेवा</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <a class="btn outline" href="index.html">Home</a>
+      <a class="btn primary" href="voter_login.html">Login to Vote</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <h1>All Candidates</h1>
+    
+    <div id="candidates-list">
+      <p>Loading candidates...</p>
+    </div>
+
+    <div class="action-buttons">
+      <a href="voter_login.html" class="btn primary large">Login to Vote</a>
+      <a href="index.html" class="btn outline large">Back to Home</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <small>© ElectionSeva - Government of India</small>
+  </div>
+</footer>
+
+<script>
+// Simple candidates loading
+fetch('/Online_Voting/backend/get_all_candidates.php')
+  .then(r => r.json())
+  .then(candidates => {
+    const container = document.getElementById('candidates-list');
+    
+    if (!candidates || candidates.length === 0) {
+      container.innerHTML = '<p>No candidates available.</p>';
+      return;
+    }
+    
+    const html = candidates.map(candidate => `
+      <div class="candidate-card">
+        <div class="candidate-header">
+          <div class="candidate-info">
+            <h3>${candidate.name}</h3>
+            <p><strong>Party:</strong> ${candidate.party || 'Independent'}</p>
+            <p><strong>Constituency:</strong> ${candidate.constituency || 'General'}</p>
+          </div>
+        </div>
+        <div class="candidate-manifesto">
+          <h4>Manifesto</h4>
+          <p>${candidate.manifesto || 'No manifesto provided'}</p>
+        </div>
+      </div>
+    `).join('');
+    
+    container.innerHTML = html;
+  })
+  .catch(err => {
+    document.getElementById('candidates-list').innerHTML = '<p>Error loading candidates. Please try again.</p>';
+  });
+</script>
+</body>
+</html>

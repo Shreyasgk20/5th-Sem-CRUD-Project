@@ -1,0 +1,35 @@
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tricolor" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FF9933;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#138808;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer circle -->
+  <circle cx="20" cy="20" r="18" fill="url(#tricolor)" stroke="#003366" stroke-width="2"/>
+  
+  <!-- Inner circle -->
+  <circle cx="20" cy="20" r="12" fill="#003366"/>
+  
+  <!-- Ashoka Chakra (simplified) -->
+  <circle cx="20" cy="20" r="8" fill="none" stroke="#FFFFFF" stroke-width="1"/>
+  <circle cx="20" cy="20" r="6" fill="none" stroke="#FFFFFF" stroke-width="0.5"/>
+  <circle cx="20" cy="20" r="4" fill="none" stroke="#FFFFFF" stroke-width="0.5"/>
+  
+  <!-- Center dot -->
+  <circle cx="20" cy="20" r="1.5" fill="#FFFFFF"/>
+  
+  <!-- Spokes (simplified) -->
+  <line x1="20" y1="4" x2="20" y2="8" stroke="#FFFFFF" stroke-width="0.8"/>
+  <line x1="20" y1="32" x2="20" y2="36" stroke="#FFFFFF" stroke-width="0.8"/>
+  <line x1="4" y1="20" x2="8" y2="20" stroke="#FFFFFF" stroke-width="0.8"/>
+  <line x1="32" y1="20" x2="36" y2="20" stroke="#FFFFFF" stroke-width="0.8"/>
+  
+  <!-- Diagonal spokes -->
+  <line x1="7.07" y1="7.07" x2="9.9" y2="9.9" stroke="#FFFFFF" stroke-width="0.6"/>
+  <line x1="32.93" y1="32.93" x2="30.1" y2="30.1" stroke="#FFFFFF" stroke-width="0.6"/>
+  <line x1="32.93" y1="7.07" x2="30.1" y2="9.9" stroke="#FFFFFF" stroke-width="0.6"/>
+  <line x1="7.07" y1="32.93" x2="9.9" y2="30.1" stroke="#FFFFFF" stroke-width="0.6"/>
+</svg>

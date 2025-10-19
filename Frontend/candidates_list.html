@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>All Candidates - ElectionSeva</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="assets/logo.svg" alt="ElectionSeva logo" class="logo">
+      <div class="brand-text">
+        <h1>ElectionSeva</h1>
+        <div class="hindi">निर्वाचन सेवा</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <a class="btn outline" href="index.html">Home</a>
+      <a class="btn primary" href="voter_login.html">Login to Vote</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="page-header">
+      <h1>All Candidates</h1>
+      <p class="subtitle">Review all candidates and their manifestos before voting</p>
+    </div>
+
+    <div id="candidates-container">
+      <p>Loading candidates...</p>
+    </div>
+
+    <div class="action-buttons">
+      <a href="voter_login.html" class="btn primary large">Login to Vote</a>
+      <a href="how_to_vote.html" class="btn outline large">How to Vote</a>
+      <a href="index.html" class="btn outline large">Back to Home</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <small>© ElectionSeva - Government of India</small>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+// Load candidates
+document.addEventListener('DOMContentLoaded', function() {
+  loadCandidates();
+});
+
+function loadCandidates() {
+  fetch('/Online_Voting/backend/get_all_candidates.php')
+    .then(response => response.json())
+    .then(candidates => {
+      const container = document.getElementById('candidates-container');
+      
+      if (!Array.isArray(candidates) || candidates.length === 0) {
+        container.innerHTML = '<div class="no-candidates"><p>No candidates available at the moment.</p></div>';
+        return;
+      }
+      
+      const html = candidates.map(candidate => `
+        <div class="candidate-card">
+          <div class="candidate-header">
+            <div class="candidate-symbol">
+              ${candidate.party_symbol ? 
+                `<img src="uploads/symbols/${candidate.party_symbol}" alt="${candidate.party} symbol" class="party-symbol">` : 
+                '<div class="no-symbol">No Symbol</div>'
+              }
+            </div>
+            <div class="candidate-info">
+              <h3 class="candidate-name">${escapeHtml(candidate.name)}</h3>
+              <p class="candidate-party">${escapeHtml(candidate.party || 'Independent')}</p>
+              <p class="candidate-constituency">${escapeHtml(candidate.constituency || '')}</p>
+            </div>
+            <div class="candidate-actions">
+              <button class="btn delete-btn" onclick="deleteCandidate(${candidate.id})" style="display: none;">
+                Delete
+              </button>
+            </div>
+          </div>
+          <div class="candidate-manifesto">
+            <h4>Manifesto</h4>
+            <p>${escapeHtml(candidate.manifesto || 'No manifesto provided')}</p>
+          </div>
+        </div>
+      `).join('');
+      
+      container.innerHTML = html;
+      
+      // Show delete buttons for admin
+      checkAdminStatus();
+    })
+    .catch(error => {
+      console.error('Error loading candidates:', error);
+      document.getElementById('candidates-container').innerHTML = 
+        '<div class="error"><p>Error loading candidates. Please try again later.</p></div>';
+    });
+}
+
+function checkAdminStatus() {
+  // Check if user is admin by trying to access admin-only endpoint
+  fetch('/Online_Voting/backend/get_stats.php')
+    .then(response => {
+      if (response.ok) {
+        // User is admin, show delete buttons
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.style.display = 'inline-block';
+        });
+      }
+    })
+    .catch(error => {
+      // User is not admin, keep delete buttons hidden
+      console.log('User is not admin');
+    });
+}
+
+function deleteCandidate(candidateId) {
+  if (confirm('Are you sure you want to delete this candidate? This action cannot be undone.')) {
+    fetch('/Online_Voting/backend/admin_delete_candidate.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `candidate_id=${candidateId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert('Candidate deleted successfully');
+        loadCandidates(); // Reload the list
+      } else {
+        alert('Error: ' + (data.message || 'Failed to delete candidate'));
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Error deleting candidate');
+    });
+  }
+}
+
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+</script>
+</body>
+</html>

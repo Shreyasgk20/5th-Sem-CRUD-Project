@@ -4,7 +4,7 @@
 <body>
 <div class="container auth-page">
   <h2>Admin Panel</h2>
-  <form id="admin-login" action="/Online_Voting/Backend/auth.php" method="POST">
+  <form id="admin-login" action="/Online_Voting/backend/auth.php" method="POST">
     <input type="hidden" name="action" value="admin_login">
     <label>Username <input name="username" required></label>
     <label>Password <input name="password" type="password" required></label>
@@ -14,25 +14,56 @@
   <hr/>
 
   <div id="admin-tools" style="display:none;">
-    <h3>Add candidate</h3>
-    <form id="add-candidate">
-      <label>Name <input name="name" required></label>
-      <label>Party <input name="party"></label>
-      <label>Manifesto <textarea name="manifesto"></textarea></label>
-      <div class="form-row"><button class="btn primary" type="button" id="addCandidateBtn">Add</button></div>
-    </form>
+    <div class="admin-section">
+      <h3>Election Control</h3>
+      <div class="election-controls">
+        <button class="btn primary" id="openElectionBtn">Open Election</button>
+        <button class="btn outline" id="closeElectionBtn">Close Election</button>
+        <button class="btn success" id="publishResultsBtn">Publish Results</button>
+        <button class="btn warning" id="unpublishResultsBtn">Unpublish Results</button>
+      </div>
+      <div id="election-status"></div>
+    </div>
 
-    <h3>Add voter</h3>
-    <form id="add-voter">
-      <label>Voter ID <input name="voter_id" required></label>
-      <label>Full name <input name="full_name" required></label>
-      <label>DOB <input name="dob" type="date" required></label>
-      <label><input name="is_verified" type="checkbox"> Verified</label>
-      <div class="form-row"><button class="btn primary" type="button" id="addVoterBtn">Add Voter</button></div>
-    </form>
+    <div class="admin-section">
+      <h3>Candidate Management</h3>
+      <div class="admin-actions">
+        <a href="admin_register_candidate.html" class="btn primary">Register New Candidate</a>
+        <a href="candidates_list.html" class="btn outline">View All Candidates</a>
+      </div>
+    </div>
 
-    <h3>Stats</h3>
-    <div id="stats"></div>
+    <div class="admin-section">
+      <h3>Voter Management</h3>
+      <div class="admin-actions">
+        <a href="register_voter.html" class="btn primary">Register New Voter</a>
+        <button class="btn outline" id="viewVotersBtn">View All Voters</button>
+      </div>
+      <div id="voters-list" style="display:none;"></div>
+    </div>
+
+    <div class="admin-section">
+      <h3>Quick Add (Legacy)</h3>
+      <form id="add-candidate">
+        <label>Name <input name="name" required></label>
+        <label>Party <input name="party"></label>
+        <label>Manifesto <textarea name="manifesto"></textarea></label>
+        <div class="form-row"><button class="btn primary" type="button" id="addCandidateBtn">Add</button></div>
+      </form>
+
+      <form id="add-voter">
+        <label>Voter ID <input name="voter_id" required></label>
+        <label>Full name <input name="full_name" required></label>
+        <label>DOB <input name="dob" type="date" required></label>
+        <label><input name="is_verified" type="checkbox"> Verified</label>
+        <div class="form-row"><button class="btn primary" type="button" id="addVoterBtn">Add Voter</button></div>
+      </form>
+    </div>
+
+    <div class="admin-section">
+      <h3>Statistics</h3>
+      <div id="stats"></div>
+    </div>
   </div>
 </div>
 <script src="js/main.js"></script>

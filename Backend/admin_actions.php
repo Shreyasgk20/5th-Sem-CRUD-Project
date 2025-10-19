@@ -4,7 +4,7 @@ require_once 'db.php';
 session_start();
 
 // This file handles admin-only actions; enforce admin session
-$BASE_FRONTEND = '/Online_Voting/Frontend';
+$BASE_FRONTEND = '/Online_Voting/frontend';
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo "Method not allowed";
