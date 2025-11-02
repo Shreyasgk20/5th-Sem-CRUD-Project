@@ -117,3 +117,56 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+// Candidate list & delete feature
+document.getElementById("listCandidatesBtn").addEventListener("click", async () => {
+  const candidateList = document.getElementById("candidate-list");
+  candidateList.style.display = "block";
+  candidateList.innerHTML = "Loading...";
+
+  try {
+    const response = await fetch("/Online_Voting/backend/get_candidates.php");
+    const data = await response.json(); // expects JSON array of candidates
+
+    if (data.length === 0) {
+      candidateList.innerHTML = "No candidates found.";
+      return;
+    }
+
+    let html = "<ul class='candidate-items'>";
+    data.forEach(candidate => {
+      html += `
+        <li>
+          <strong>${candidate.name}</strong> (${candidate.party || "No Party"})
+          <button class="btn warning delete-btn" data-id="${candidate.id}">Delete</button>
+        </li>`;
+    });
+    html += "</ul>";
+
+    candidateList.innerHTML = html;
+
+    // Delete candidate
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-id");
+        if (confirm("Are you sure you want to delete this candidate?")) {
+          const res = await fetch("/Online_Voting/backend/delete_candidate.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id })
+          });
+          const result = await res.json();
+          if (result.success) {
+            btn.parentElement.remove();
+            alert("Candidate deleted successfully.");
+          } else {
+            alert("Error deleting candidate.");
+          }
+        }
+      });
+    });
+
+  } catch (error) {
+    candidateList.innerHTML = "Error loading candidates.";
+    console.error(error);
+  }
+});
